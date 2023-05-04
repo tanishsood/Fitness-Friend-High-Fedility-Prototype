@@ -1,0 +1,970 @@
+<!--This is the main html doc for the fitness friend project
+	Course: COMP 3020 A02 Fall 2021
+	Author: PT-E 
+	Created: 11/05/2021
+	Last updated: 11/21/2021 -->
+
+<!doctype html>
+<html lang="en">
+	
+	<!-- This is the header section -->
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!--Link to external stylesheet for this document -->
+		<link rel="stylesheet" href="styles.css"> 
+		
+		<!--These link the external js script documents -->
+		<script type="application/javascript" src="scripts.js" charset="UTF-8">	</script>
+		<script type="application/javascript" src="palScripts_v2.js" charset="UTF-8"></script>
+		<script type="application/javascript" src="water_v2.js" charset="UTF-8"></script>
+		<script type="application/javascript" src="shop3.js" charset="UTF-8"></script>
+		<script type="application/javascript" src="friendsActivity.js" charset="UTF-8"></script>
+		<script src="https://kit.fontawesome.com/ec56e58193.js" crossorigin="anonymous"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js" crossorigin="anonymous"></script>
+		
+		<!--Library for the sprite animations -->
+		<script type="application/javascript" src="sprite.js/sprite.js" charset="UTF-8"> </script>
+		<!-- alternative script for sprite.js, not working :(
+		<script type="application/javascript" src="https://raw.githubusercontent.com/batiste/sprite.js/master/sprite.js" charset="UTF-8" integrity="sha384-43i2Tk0ml4HaHUdSne0cjsNQLOTU4eOL2LCdvc1nm/uo98UQuMz3csUtwFYDwlWm" crossorigin="anonymous" id="sjs"></script>
+		-->
+		
+		<!--Title of this document -->
+		<title> Fitness Friend </title> 
+
+	</head>
+
+	<!--This is the body section -->
+	<body>
+		<h1 class="tac" >Fitness Friend</h1>
+		<div id="superMain" class="screen">
+		
+		
+		<!--This is the first screen that shows when users open the site 
+			Here users can choose to sign-in, sign-up, or learn more about the site -->
+		<div id="main" class="screen">
+			<h2>Welcome</h2>
+			<!--To-Do: Add button + about section? -->
+			<button type="button" onclick="replace('main','signIn')" class = "signupbtn">Login</button>
+			<button type="button" onclick="go('palSelector');replace('main','palPicker');" class = "signupbtn">Sign-Up</button>
+			<button type="button" onclick="replace('main','homeScreen');quickLogin();" class = "signupbtn">Quick In!</button>
+		</div>
+	
+		<!--This is the sign-in screen-->
+		<div id="signIn" hidden="true" class="screen">
+			
+			<!--sign-in form-->
+			<div class="formDiv">
+			<h2>Login</h2>
+				<form name="signInForm" onsubmit="javascript:signInHandler();refresh(); return false;">
+				<!--Details: User email/username, password -->
+				
+                    <label for="uname"><b>User name:</b></label>
+                    <input type="text" oninvalid="this.setCustomValidity('Enter your username or email.')" oninput="this.setCustomValidity('')" placeholder= "Enter Your Username" id="uname" required name="uname" value="">
+
+					<br>
+
+                    <label for="pw"><b>Password</b></label>
+                    <input type="password" oninvalid="this.setCustomValidity('Enter your password.')" oninput="this.setCustomValidity('')" placeholder="Enter Your Password" id = "pw" name="pw" required="">
+                    
+					<br>
+					
+					<div class="rememberMe">
+						<label>
+						<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+						</label>
+					</div>
+					<input type="submit" value="Submit" class = "signupbtn">
+				
+					<!--back navigation button -->
+					<button type="button" onclick="replace('signIn','main')" class = "backbtn">Back</button>
+				</form>
+			</div>
+		</div>
+	
+
+		<!--This is the pal picker screen, part of the sign-up process-->
+		<div id="palPicker" hidden="true" class="screen">
+			<div class="formDiv">
+			<h2>Pick your pal!</h2>
+			
+			<!--This div contains the selectable pals -->
+			<div id="palSelector"> </div>
+			
+			<!--back navigation button -->
+			<button type="button" onclick="replace('palPicker','main')" class = "backbtn">Back</button>
+			
+			<!--Forward navigation button
+				To-Do: ensure a pal is selected?-->
+			<button type="button" id="palNext" onClick="replace('palPicker','actDetails')" class = "signupbtn">Next</button>
+			</div>
+		</div>
+		
+		<!--This is the account details screen, part of the sign-up process -->
+		<div id="actDetails" hidden="true" class="screen">
+			
+			<!--To-Do: complete form for email, password
+				To-Do: Error-checking for form?
+						- Check valid email
+						- Check email/password re-entry matches
+						- Check username is unique ?-->
+			<div class="formDiv">
+				<h2>Create your account:</h2>
+				<form name="actDetails" onsubmit="javascript:actDataHandler(); return false;">
+					<!--Details: user email, username, password (enter x2 email + password)-->
+					<label for="uname"><b>Username:</b></label>
+					<input type="text" oninvalid="this.setCustomValidity('Enter any username you would like.')" oninput="this.setCustomValidity('')" placeholder= "Enter Username" id="uname" required="" name="uname" value="">
+				
+					<br><br>
+	
+					<label for="email"><b>Email</b></label>
+					<input type="email" placeholder="Enter Email" oninvalid="this.setCustomValidity('Enter an email of the form: someone@somewhere.com')" oninput="this.setCustomValidity('')" id = "email" name="email" required>
+				
+					<br><br>
+				
+					<label for="psw"><b>Password</b></label>
+					<input type="password" oninvalid="this.setCustomValidity('Enter any password you would like.')" oninput="this.setCustomValidity('')" placeholder="Enter Password" id = "password" name="psw" onkeyup='check();' required>
+			
+					<br>
+			
+					<label for="psw-repeat"><b>Repeat Password</b></label>
+					<input type="password" placeholder="Repeat Password" id = "passwordRepeat" name="psw-repeat" onkeyup='check();' required>
+					<br>
+					<span id='message'></span>
+				
+					<br><br>
+				
+					<div class="rememberMe">
+						<label for="remember">Remember me</label>
+						<input type="checkbox" id="remember" checked="checked" name="remember" style="margin-bottom:15px"> 
+					
+                    
+						<p>By creating an account you agree to our 
+							<div class="tooltip" style="color:dodgerblue">Terms & Privacy
+								<span class="tooltiptext">We collect data that is voluntarily filled in. This includes height, weight, age, gender, activity level, and email. 
+									This data is not shared or sold. Email is collected to enable sign ins. All other information is used to calculate calories. Friends are added
+									voluntarily by the user. When sharing progress with friends they will only see the percentage of goals completed.
+								</span>
+							</div>
+						.</p>
+					</div>
+					<input type="submit" value="Submit" class = "signupbtn">
+				<!--back navigation button -->
+				<button type="button" onclick="replace('actDetails','palPicker')" class = "backbtn">Back</button>
+				</form>
+				
+			</div>
+			
+		</div>
+
+
+		<!--This is the user details screen, part of the sign-up process-->
+		<div id="userDetails" hidden="true" class="screen">
+			<div class="formDiv">
+			<h2 class="tac">Enter your health details:</h2>
+				<!--To-Do: complete form for user details
+					To-Do: add user details to user object-->
+				<form name="userDetailsForm" id="userDetailsForm" onsubmit="javascript:userDataHandler(); refresh(); clearPalPicker('palSelector'); return false;">
+					
+					
+					
+					<!--Details: height, weight, age/birthdate -->
+					<label for="gender">Sex:</label>
+                    <select form="userDetailsForm" id="gender" name="gender">
+                        <option label="Male"></option>
+                        <option label="Female"></option>
+                    </select>
+					<div class="tooltip" id="sexInfo" style="color:dodgerblue">?
+						<span class="tooltiptext">This is used to approximate how many calories your body burns at rest. Please choose the option that best describes your hormone levels.</span>
+					</div>
+					
+					<br><br>
+                    
+					<label for="age">Date Of Birth:</label>
+                    <input form="userDetailsForm" type="date" id="age" name="age" required>
+					
+					<br><br>
+					
+					<fieldset form="userDetailsForm">
+					<legend>Height</legend>
+					<div id = "cm">
+						<label for="heightcm">Height in cm: </label>
+						<input form="userDetailsForm" type="number" min="1" step="1" id="heightcm" name="heightcm" placeholder="cm" required>
+                    </div>
+					<div id = "fAndI" hidden = "true">
+						<label for="heightft">Height in feet: </label>
+						<input form="userDetailsForm" type="number" min="1" step="1" id="heightft" name="heightft"oninvalid="this.setCustomValidity('Enter your height and select the measurements used.')"oninput="this.setCustomValidity('')" placeholder="Feet" >
+						
+						<label for="heightin">Inches: </label>
+						<input form="userDetailsForm" type="number" min="0" step="1" id="heightin" name="heightin"oninvalid="this.setCustomValidity('Enter your height and select the measurements used.')"oninput="this.setCustomValidity('')" placeholder="Inches"  >
+					</div>
+					
+					<label for="cms">cm</label>
+                        <input form="userDetailsForm" type="radio" id="cms" checked="checked" name="remember" style="margin-bottom:15px" onclick = "replace('fAndI','cm'); checkReqs();"> 
+                    
+                    <label for="feets">feet/inches</label>
+                        <input form="userDetailsForm" type="radio" id="feets" name="remember" style="margin-bottom:15px" onclick = "replace('cm','fAndI'); checkReqs();"> 
+                    </fieldset>
+					
+					<br><br>
+					<fieldset form="userDetailsForm">
+					<legend>Weight</legend>
+					<label for="weight">Weight:</label>
+                    <input form="userDetailsForm" type="number" min="1" step="1" id="weight" name="weight" placeholder="kgs"><br>
+                    
+					<label for="kgs">kgs</label>
+					<input form="userDetailsForm" type="radio" checked="checked" id="kgs" name="weight" style="margin-bottom:15px" onclick="swapUnit('kgs','weight')"> 
+					
+					<label for="lbs">lbs</label>
+					<input form="userDetailsForm" type="radio" id="lbs" name="weight" style="margin-bottom:15px" onclick="swapUnit('lbs','weight')"> 
+					</fieldset>
+					
+					<br>
+					<br>
+					
+					<label for="activityLvl">Activity Level:</label>
+                    <select form="userDetailsForm" id="activityLvl" name="activityLvl">
+                        <option value="0">Sedentary lifestyle: little or no exercise</option>
+                        <option value="1">Slightly active lifestyle: exercise 1-3 times/week</option>
+                        <option value="2">Moderately active lifestyle: exercise 4-5 times/week</option>
+						<option value="3">Active lifestyle: daily exercise or intense exercise 3-4 times/week</option>
+                        <option value="4">Very active lifestyle: intense exercise 6-7 times/week</option>
+                    </select>
+				
+					<br><br>
+					<div class="tooltip" id="info" style="color:dodgerblue">
+						Why do we ask for this information?
+						<span class="tooltiptext">We use sex, height, weight, age, and activity level to calculate your recommended
+							calories. The amount of calories you need changes depending on all these factors. If you
+							are unsure what sex you should be choosing or if our calculations are right for you,
+							please consult a doctor.</span>
+					</div>
+					<br><br>
+					
+					<input form="userDetailsForm" type="submit" value="Submit" class = "signupbtn">
+				</form>
+				<!--back navigation button: Doesn't make sense to go back after creating an account
+				<button type="button" onclick="replace('userDetails','actDetails')">Back</button> 
+				-->
+			</div>
+		</div>
+		
+		<div id="userDetails2" hidden="true" class="screen">
+			<div class="formDiv">	
+			<h2 class="tac">Choose your weight goal:</h2>
+				<form name="userDetailsForm2" id="userDetailsForm2" onsubmit="javascript:userDataHandler2();return false;">
+					<fieldset form="userDetailsForm2">
+						<legend>What is your weight goal?</legend>
+					
+						<label for="loseW">Lose weight</label>
+						<input form="userDetailsForm2" type="radio" id="loseW" name="weightGoal" style="margin-bottom:15px" onClick="getGoalWeight(true)">
+					
+						<label for="maintainW">Maintain weight</label>
+						<input form="userDetailsForm2" type="radio" id="maintainW" checked="checked" name="weightGoal" style="margin-bottom:15px" onClick="getGoalWeight(false)">
+					
+						<label for="gainW">Gain weight</label>
+						<input form="userDetailsForm2" type="radio" id="gainW" name="weightGoal" style="margin-bottom:15px" onClick="getGoalWeight(true)">
+					</fieldset>
+					<br>
+					
+					<fieldset id="goalWeightDiv" disabled="true" form="userDetailsForm2">
+						<legend >What is your goal weight?</legend>
+						<label for="goalWeight">Weight:</label>
+						<input form="userDetailsForm2" type="number" min="1" step="1" id="goalWeight" name="goalWeight" placeholder="kgs"><br>
+                    
+						<label for="kgs">kgs</label>
+						<input form="userDetailsForm2" type="radio" checked="checked" id="kgsG" name="goalWeight" style="margin-bottom:15px" onclick="swapUnit('kgs','goalWeight')"> 
+					
+						<label for="lbs">lbs</label>
+						<input form="userDetailsForm2" type="radio" id="lbsG" name="goalWeight" style="margin-bottom:15px" onclick="swapUnit('lbs','goalWeight')"> 
+					
+					</fieldset>
+					<input form="userDetailsForm2" type="submit" value="Submit" class = "signupbtn">
+				</form>
+			</div>
+		</div>
+			
+		<!--This is the home screen, custom view for the user-->
+		<div id="homeScreen" hidden="true" class="screen">
+			<h2>This is the homescreen</h2>
+			<p id="test"></p>
+			
+			<!--To-Do: a lot D: -->
+			<div class="menuDiv">
+				<button type="button" class = "menubtn" onclick="replace('homeScreen','goals')"><h3>Goals</h3></button>
+				<button type="button" class = "menubtn" onclick="replace('homeScreen','friendsPage');getFriendPage();"><h3>Friends</h3></button>
+				<button type="button" class = "menubtn" onclick="openShop()"><h3>Shop</h3></button>
+				<button type="button" class = "menubtn" onclick="openCloset()"><h3>Wardrobe</h3></button>
+				<button type="button" class = "menubtn" onclick="replace('homeScreen','calendar');setCalendar();"><h3>Calendar</h3></button>
+				<button type="button" class = "menubtn" onclick="replace('homeScreen','dailyFood');getDailyFood(currDay[0]);"><h3>Meal Plan</h3></button>
+				<button type="button" class = "menubtn" onclick="replace('homeScreen','main');logout();"><h3>Logout</h3></button>
+			</div>
+			
+			<!--the inner html of this div is set by js to display currUser[0] details -->
+			<div id="details">
+				
+			</div>
+			
+			<div id="homeWater">
+			
+			</div>
+		
+		</div>
+		
+		<!--This is the goals screen, custom view for the user-->
+		<div id="goals" hidden="true" class="screen">
+			<h2>This is the goals page</h2>
+			<button type="button" class = "backbtn" onclick="replace('goals','homeScreen')">Home</button>
+			<!--To-Do: Add back navigation
+				To-Do: Create (hard-code) goals
+				To-Do: sections for in-progress vs complete vs not started goals
+				To-Do: code html elements for goals?-->
+				<div class="goaltab">
+				<button class="tablinks" onclick="openGoals(event, 'completed')">Completed Goals</button>
+				<button class="tablinks" onclick="openGoals(event, 'current')">Current Goals</button>
+			</div>
+			  
+			<div id="completed" class="goaltabcontent">
+				<h3>Completed Goals</h3>
+				<ul id="myUL" class="mygoalclass">
+					<li id="3glass"></li>
+					<li id="5glass"></li>
+					<li id="8glass"></li>
+			</div>
+			  
+			<div id="current" class="goaltabcontent">
+				<h3>Current Goals</h3>
+				<ul id="allgoals" class="mygoalclass">
+					<li id="3">3 GlassFun: To finish this goal drink 3 glass of water in a day.</li>
+					<li id="5">5 GlassFun: To finish this goal drink 5 glass of water in a day.</li>
+					<li id="8">8 GlassFun: To finish this goal drink 8 glass of water in a day.</li>
+			</div>
+		
+		</div>
+		
+		<div id="friendsPage" hidden="true" class="screen">
+			<h2>This is the friends page</h2>
+			<button type="button" class = "backbtn" onclick="replace('friendsPage','homeScreen')">Home</button>
+			<div id="friendsHeader">
+				<button type="button" class="signupbtn" onclick="myFriend()"><i class="fas fa-user-plus"></i> Add Friend</button>
+				<div id="myfriendDIV" style="display:none;">
+				    <label for="friendName"></label>
+                    <input type="text" id="friendName"  name="friendName" placeholder="Enter username or email address">
+					<button class="signupbtn" onclick="addUser()">Add</button>
+					<p id="alert" class="alert"></p>
+					
+			</div>
+			</div>
+			
+			<div id="friendGraphs">
+				<h3>Your Friends</h3>
+			</div>
+			
+			<br>
+			<p>Leaderboard</p>
+			<div id = "leaderboard" class = "row">
+				<div class = "column">
+					<table id="boardLeft">
+						<tr>
+						<th>Daily</th>
+	
+						</tr>
+					</table>
+				</div>
+				<div class = "column">
+					<table id="boardRight">
+						<tr>
+
+						<th>Level</th> 
+						</tr>
+					</table>
+				</div>
+      
+			</div>
+			
+		</div>
+		
+		<!--This is the shop screen, custom view for the user-->
+		<div id="shop" hidden="true" class="screen">
+			<h2>This is the shop page</h2>
+			<!--To-Do: add back navigation 
+				To-Do: display pal character, coins, current level
+				To-Do: create shop sections 
+				To-Do: create shop items -->
+			<div id="shopLeft">
+				<button type="button" class = "backbtn" onclick="replace('shop','homeScreen')">Home</button>
+				<div id="palDisplay">
+			
+				</div>
+			</div>
+			
+			<div id="storeContainer">
+			<!-- Tab links -->
+			<div class="tab">
+				<button type="button" class="tablinks" onclick="changeTab(event, 'Shop')" id="defaultOpen"><h3>Shop</h3></button>
+				<button type="button" class="tablinks" onclick="changeTab(event, 'Wardrobe')" id="closetView"><h3>Wardrobe</h3></button>
+			</div>
+			
+			<!-- Tab content -->
+			<div id="Shop" class="tabcontent">
+				<h3>Shop</h3>
+				<p>Buy items.</p>
+				<div class="tabVertical">
+					<button class="tablinks2" onclick="openCategory(event, 'Accessories')"><h3>Accessories</h3></button>
+					<button class="tablinks2" onclick="openCategory(event, 'Tops')"><h3>Tops</h3></button>
+					<button class="tablinks2" onclick="openCategory(event, 'Bottoms')"><h3>Bottoms</h3></button>
+				</div>
+				
+				<div id="Accessories" class="tabVerticalcontent">
+					
+
+				
+
+				</div>
+
+				<div id="Tops" class="tabVerticalcontent">
+					
+				</div>
+
+				<div id="Bottoms" class="tabVerticalcontent">
+					
+				</div>
+			</div>
+
+			<div id="Wardrobe" class="tabcontent">
+				<h3>Wardrobe</h3>
+				<p>Customize your pal.</p>
+				<div class="tabVertical">
+					<button class="tablinks2" onclick="openCategory(event, 'WAccessories')"><h3>Accessories</h3></button>
+					<button class="tablinks2" onclick="openCategory(event, 'WTops')"><h3>Tops</h3></button>
+					<button class="tablinks2" onclick="openCategory(event, 'WBottoms')"><h3>Bottoms</h3></button>
+				</div>
+
+				<div id="WAccessories" class="tabVerticalcontent">
+					
+				</div>
+
+				<div id="WTops" class="tabVerticalcontent">
+					
+				</div>
+
+				<div id="WBottoms" class="tabVerticalcontent">
+					
+				</div>
+			</div>
+			</div>
+			
+		</div>
+		
+		<!--This is the daily food tracker/planner screen, custom view for the user-->
+		<div id="dailyFood" hidden="true" class="screen">
+			<!--To-Do: navigation: to calendar, next/prev day
+				To-Do: display current date (javascript code!!)
+				To-Do: add food to meals button
+				To-Do: display mood/water trackers (greyed out if != current day)
+				To-Do: calorie display
+				To-Do: nutrient display-->
+			
+			<!--NAVIGATION -->
+			<div id="buttonHeader">
+			<button type="button" class = "backbtn" onclick="replace('dailyFood','homeScreen')">Home</button>
+			</div>
+			<!--MEAL PLANNER + INFO -->
+			<div id="bigDay" class="bigDay">
+				<!--This should show the day that the meals correspond to -->
+				
+				<div id="dailyHeader">
+					<button type = "button" class = "arrowNav" onclick="getDailyFood(-1)">🠀</button>
+					<h2 id="dailyDate">Any Date</h2>
+					<button type="button" class="arrowNav" onclick="getDailyFood(1)">🠂</button>
+				</div>
+				<!--This is the breakfast container -->
+				<div id="breakfastBox" class="bigMealBox">
+					<h3>Breakfast</h3>
+					<button type="button" class="signupbtn" onclick="getFoodCat(0)"><i class="fas fa-plus-circle"></i> Add</button>
+					
+					<!--This element is manipulated by the js (TO-DO) -->
+					<div id="breakfast" class="bigMeal">
+						<ul id="breakfastOpt"> </ul>
+					</div>
+				</div>
+				
+				<!--This is the lunch container -->
+				<div id="lunchBox" class="bigMealBox">
+					<h3>Lunch</h3>
+					<button type="button" class="signupbtn" onclick="getFoodCat(1)"><i class="fas fa-plus-circle"></i> Add</button>
+					
+					<!--This element is manipulated by the js (TO-DO) -->
+					<div id="lunch" class="bigMeal">
+						<ul id="lunchOpt"> </ul>
+					</div>
+				</div>
+				
+				<!--This is the dinner container -->
+				<div id="dinnerBox" class="bigMealBox">
+					<h3>Dinner</h3>
+					<button type="button" class="signupbtn" onclick="getFoodCat(2)"><i class="fas fa-plus-circle"></i> Add</button>
+					
+					<!--This element is manipulated by the js (TO-DO) -->
+					<div id="dinner" class="bigMeal">
+						<ul id="dinnerOpt"> </ul>
+					</div>
+				</div>
+				
+				<!--This is the Snacks container -->
+				<div id="snacksBox" class="bigMealBox">
+					<h3>Snacks</h3>
+					<button type="button" class="signupbtn" onclick="getFoodCat(3)"><i class="fas fa-plus-circle"></i> Add</button>
+					
+					<!--This element is manipulated by the js (TO-DO) -->
+					<div id="snacks" class="bigMeal">
+						<ul id="snacksOpt"> </ul>
+					</div>
+				</div>
+				
+				<div id="infoSummary" class="bigInfo">
+				
+				</div>
+				
+				<div id="dailyWater">
+			
+				</div>
+				
+				<div class="my-grid">
+					<div class="col-1-3" id = actualBar>(actual calories)</div>
+					<div class="col-2-3" id = goalBar>(goal calories)</div>
+					<div class="col-3-3" id = overBar>(over)</div>
+				</div>												
+			</div>
+					 
+		</div>
+		
+		<!--This is the food catalogue screen, custom view for the user-->
+		<div id="foodCat" hidden="true" class="screen">
+			<h2>This is the food catalogue</h2>
+			<h3 id="currFoodCat"> </h3>
+			<!--To-Do: hard-code catalogue entries (name, calories, macronutrient values)
+				To-Do: user history display
+				To-Do: 'add + return' and 'add + continue' buttons (+ script)
+				To-Do: display current date + meal
+				To-Do: quantity property / selector ?-->
+			<button type="button" class = "backbtn" onclick="replace('foodCat','dailyFood')">Return</button>
+			<form name="foodSearch" id="foodSearch" autocomplete="on">
+				<div class="searchbar" id="searchbar">
+				
+					<label form="foodSearch" for="textSearch">Search</label>
+					<input type="text" form="foodSearch" id="textSearch" name="textSearch"  class="input" placeholder="what are you looking for?">
+					
+					
+					<span id="error"></span>
+					<div class="searchbtn">
+						<button type="button" class="signupbtn" id="submit" onclick="searchItem()"><i class="fas fa-search"></i></button>
+					</div>
+
+					<div id="itemOpt" hidden="true">
+						<span id="no_item_message" style='color:grey;'>Hello</span>
+						<ul id="options" class="options"></ul>
+					</div>
+
+					<div id="nextBtns" hidden="true">
+						
+						<button type="button" class="signupbtn" id="return" onclick="addReturn()">Add and Return</button>
+						<button type="button" class="signupbtn"  id="continue" onclick="addContinue()">Add and Continue</button>
+					
+					</div>
+
+				</div>
+			
+				<div id="history" >
+					<b style="color:purple;">History:</b>
+					<ul id="hist" class="Hist">
+						
+					</ul>
+					<div id="nextHistBtns" hidden="true">
+						<button type="button" class="signupbtn"  id="return" onclick="addReturnHist()">Add and Return</button>
+						<button type="button" class="signupbtn"  id="continue" onclick="addContinueHist()">Add and Continue</button>
+					</div>
+						
+				</div>
+			</form>
+			
+			<div class="addCustItem" id="addCustItem" >
+				<button type="submit" class="signupbtn"  onclick="showAddNew()"><i class="fas fa-plus-circle"></i> Create new food item</button>
+
+			</div>
+			
+			<div id="newItem" class="newitem" hidden="false">
+				<form id="toAdd" >
+					<p id="inputs">
+						<label for="itemName" id="label">Name: </label>
+						<input type="text" id="itemName" name="itemName"><br>
+					</p>
+					<p id="inputs">
+						<label for="calories" id="label">Calories: </label>
+						<input type="number" id="calories" name="calories"><br>
+					</p>
+					<p id="inputs">
+						<label for="protein" id="label">Protein: </label>
+						<input type="number" id="protein" name="protein"><br>
+					</p>
+					<p id="inputs">
+						<label for="carbs" id="label">Carbs: </label>
+						<input type="number" id="carbs" name="carbs"><br>
+					</p>
+					<p id="inputs">
+						<label for="fat" id="label">Fat: </label>
+						<input type="number" id="fat" name="fat"><br>
+					</p>
+					<p id="inputs">
+						<label for="quantity" id="label">Quantity: </label>
+						<input type="number" id="quantity" name="quantity"><br>
+					</p id="inputs">
+	
+					<button type="button" class="signupbtn"  onclick="addNewItem()">Add</button>
+	
+				</form>
+				
+					 
+
+			</div>
+		
+		</div>
+		
+		<!--This is the calendar screen, custom view for the user -->
+		<div id="calendar" hidden="true" class="screen">
+			<h2>This is the calendar page</h2>
+			<h3 id="calendarDate"></h3>
+			<!--To-Do: Navigate to daily pages by clicking calendar
+				To-Do: Water tracker display in calendar
+				To-Do: Mood/meal icons display in calendar
+				To-Do: Script to read user data + fill in calendar-->
+			
+			<div class = "innercontainer">
+			<button type="button" class = "backbtn" onclick="replace('calendar','homeScreen')">Home</button>
+				<div class = "calenderMenu">
+				
+					<div class = "innerCalMenu">
+						
+						<span class = "legendText">Legend:</span>
+						<br>
+						<span class = "bullet1">•</span> Planned Meal<br></span>
+						<span class = "bullet2">•</span> Tracked Meal 	(Not Ideal)<br> </span>
+						<span class = "bullet3">•</span> Tracked Meal  (Ideal)</span>
+					</div>
+						
+				</div>
+				
+				<div class = "emptyDiv">
+				</div>
+				<div class = "mainCalender">
+					<div class = "calMonthHeader">
+						<!--This form sets the month of the calendar when selected -->
+						<div class = "leftButtonContainer">				 
+						<button type="button" class="arrowNav" onclick="nextCalendar(false)">🠀</button>
+						</div>
+						<form name="calendarSelect" oninput="setCalendar()">
+							<label for="calendarMonth" class = "white">Select:</label>
+							<input type = "month" id="calendarMonth" name="calendarMonth" class = "mAuto" value="2021-11"/>
+						</form>
+						<div class = "rightButtonContainer">
+						<button type="button" class="arrowNav" onclick="nextCalendar(true)">🠂</button>
+						</div>
+					</div>
+					
+					
+					<div class = "calDayHeader">
+						<div class = "calDay">
+							<h4>Sun</h4>
+						</div>
+						
+						<div class = "calDay">
+							<h4>Mon</h4>
+						</div>
+						
+						<div class = "calDay">
+							<h4>Tue</h4>
+						</div>
+						
+						<div class = "calDay">
+							<h4>Wed</h4>
+						</div>
+						
+						<div class = "calDay">
+							<h4>Thu</h4>
+						</div>
+						
+						<div class = "calDay">
+							<h4>Fri</h4>
+						</div>
+						
+						<div class = "calDay">
+							<h4>Sat</h4>
+						</div>
+						
+					</div>
+					
+					<div class = "calMonth">
+						<div class = "calDate">
+							<button type = "button" class="dayButton">1</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">2</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">3</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">4</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">5</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">6</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">7</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+					</div>
+					<div class = "calMonth">
+						<div class = "calDate">
+							<button type = "button" class="dayButton">8</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">9</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">10</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">11</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">12</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">13</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">14</button>
+							<div class = "level">
+							</div>
+						</div>
+
+					</div>
+					<div class = "calMonth">
+						<div class = "calDate">
+							<button type = "button" class="dayButton">15</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">16</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">17</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">18</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">19</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">20</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">21</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+					</div>
+					<div class = "calMonth">
+						<div class = "calDate">
+							<button type = "button" class="dayButton">23</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">24</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">25</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button"class="dayButton">26</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">27</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button"class="dayButton">28</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">29</button>
+							<div class = "level">
+							</div>
+						</div>
+
+					</div>
+					<div class = "calMonth">
+						<div class = "calDate">
+							<button type = "button" class="dayButton">30</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">31</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">32</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">33</button>
+			
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">34</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button" class="dayButton">35</button>
+							<div class = "level">
+							</div>
+						</div>
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">35.5</button>
+							<div class = "level">
+							</div>
+						</div>
+					</div>
+					
+					<div class = "calMonth" id="lastWeek" hidden="true">
+						<div class = "calDate">
+							<button type = "button" class="dayButton">36</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+						<div class = "calDate">
+							<button type = "button" class="dayButton">37</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+						<div class = "calDate">
+							<button type = "button" class="dayButton">38</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+						<div class = "calDate">
+							<button type = "button"class="dayButton">39</button>
+			
+							<div class = "level">
+							</div>
+						</div>
+						
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">40</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">41</button>
+							<div class = "level">
+							</div>
+						</div>
+						
+						<div class = "calDate">
+							<button type = "button"  class="dayButton">42</button>
+							<div class = "level">
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		
+		
+		</div>
+		
+		<!--This is the mood tracker screen, custom view for the user-->
+		<div id="mood" hidden="true" >
+			<!--To-Do: Clickable icons representing mood
+				To-Do: Mood tracked display + undo option ?
+				To-Do: Add tracked value to user data-->
+		
+		</div>
+		
+		<!--This is the water tracker screen, custom view for the user-->
+		<div id="water" hidden="true">
+			<!--To-Do: Clickable icons representing glasses of water
+				To-Do: Filled glass animation
+				To-Do: Update value in user data
+				To-Do: undo tracking option-->
+		
+		</div>
+		
+		
+		</div>
+	</body>
+</html>

@@ -1,1 +1,2 @@
-# fitnessFriend
+# FitnessFriend-HighFidelityPrototype
+ 
